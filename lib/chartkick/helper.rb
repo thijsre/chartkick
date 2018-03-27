@@ -7,6 +7,10 @@ module Chartkick
       chartkick_chart "LineChart", data_source, options
     end
 
+    def gauge_chart(data_source, options = {})
+      chartkick_chart "Gauge", data_source, options
+    end
+
     def pie_chart(data_source, options = {})
       chartkick_chart "PieChart", data_source, options
     end

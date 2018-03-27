@@ -881,6 +881,41 @@
           });
         };
 
+        this.renderGauge = function (chart) {
+          waitForLoaded('gauge', function () {
+            var chartOptions = {
+              chartArea: {
+                top: "10%",
+                height: "80%"
+              },
+              legend: {},
+              redFrom: 90, redTo: 100,
+              yellowFrom: 75, yellowTo: 90,
+              minorTicks: 5
+            };
+            if (chart.options.colors) {
+              chartOptions.colors = chart.options.colors;
+            }
+            if ("legend" in chart.options) {
+              hideLegend(chartOptions, chart.options.legend);
+            }
+            if (chart.options.title) {
+              setTitle(chartOptions, chart.options.title);
+            }
+            var options = merge(merge(defaultOptions, chartOptions), chart.options.library || {});
+
+            var data = new google.visualization.DataTable();
+            data.addColumn("string", "");
+            data.addColumn("number", "Value");
+            data.addRows(chart.data);
+
+            chart.chart = new google.visualization.Gauge(chart.element);
+            resize(function () {
+              chart.chart.draw(data, options);
+            });
+          });
+        };
+
         this.renderColumnChart = function (chart) {
           waitForLoaded(function () {
             var options = jsOptions(chart, chart.options);
@@ -1776,6 +1811,9 @@
     },
     AreaChart: function (element, dataSource, options) {
       createChart("AreaChart", this, element, dataSource, options, processAreaData);
+    },
+    Gauge: function (element, dataSource, options) {
+        createChart("Gauge", this, element, dataSource, options, processSimple);
     },
     GeoChart: function (element, dataSource, options) {
       createChart("GeoChart", this, element, dataSource, options, processSimple);
