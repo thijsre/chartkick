@@ -44,6 +44,7 @@ module Chartkick
       height = options.delete(:height) || "300px"
       width = options.delete(:width) || "100%"
       defer = !!options.delete(:defer)
+      force_sync = !!options.delete(:force_sync)
       # content_for: nil must override default
       content_for = options.key?(:content_for) ? options.delete(:content_for) : Chartkick.content_for
       nonce = options.key?(:nonce) ? " nonce=\"#{ERB::Util.html_escape(options.delete(:nonce))}\"" : nil
@@ -53,7 +54,7 @@ module Chartkick
       load_event_type = turbolinks ? "turbolinks:load" : "load"
 
       createjs = "new Chartkick.#{klass}(#{element_id.to_json}, #{data_source.respond_to?(:chart_json) ? data_source.chart_json : data_source.to_json}, #{options.to_json});"
-      if defer || turbolinks
+      if !force_sync && (defer || turbolinks)
         js = <<JS
 <script type="text/javascript"#{nonce}>
   (function() {
